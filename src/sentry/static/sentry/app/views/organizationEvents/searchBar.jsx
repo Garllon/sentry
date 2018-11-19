@@ -1,3 +1,4 @@
+import {flatten} from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -7,33 +8,6 @@ import SentryTypes from 'app/sentryTypes';
 import SmartSearchBar from 'app/components/smartSearchBar';
 import withApi from 'app/utils/withApi';
 
-/*
-const KEY_SEPARATOR = '.';
-const KEYS = COLUMNS.map(({name}) => {
-  // e.g. `id` or `user.id`
-  const [parent, child] = name.split(KEY_SEPARATOR);
-  return [parent, child];
-}).reduce((acc, [parent, child]) => {
-  if (!acc[parent]) {
-    acc[parent] = {
-      key: parent,
-      name: parent,
-      description: `description of ${parent}`,
-      children: {},
-    };
-  }
-
-  acc[parent].children = {
-    [child]: {
-      key: child,
-      name: child,
-      description: `description of ${parent}${KEY_SEPARATOR}${child}`,
-    },
-  };
-
-  return acc;
-}, {});
-*/
 const TAGS = COLUMNS.map(({name}) => {
   return name;
 }).reduce((acc, name) => {
@@ -41,7 +15,6 @@ const TAGS = COLUMNS.map(({name}) => {
     acc[name] = {
       key: name,
       name,
-      description: `description of ${name}`,
     };
   }
 
@@ -69,7 +42,8 @@ class SearchBar extends React.Component {
         method: 'GET',
       })
       .then(
-        results => results.filter(({value}) => defined(value)).map(({value}) => value),
+        results =>
+          flatten(results.filter(({value}) => defined(value)).map(({value}) => value)),
         () => {
           throw new Error('Unable to fetch project tags');
         }

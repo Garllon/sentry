@@ -181,7 +181,7 @@ class SmartSearchBar extends React.Component {
    */
   getTagValues = _.debounce((tag, query, callback) => {
     // Strip double quotes if there are any
-    query = query.replace('"', '').trim();
+    query = query.replace(/"/g, '').trim();
 
     this.setState({
       loading: true,

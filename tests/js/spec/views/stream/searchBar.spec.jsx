@@ -57,7 +57,7 @@ describe('SearchBar', function() {
       expect(searchBar.find('SearchDropdown').prop('items')).toEqual([]);
       expect(urlTagValuesMock).toHaveBeenCalledWith(
         '/projects/123/456/tags/url/values/',
-        expect.objectContaining({data: {query: '"fu"'}})
+        expect.objectContaining({data: {query: 'fu'}})
       );
     });
 
@@ -80,7 +80,7 @@ describe('SearchBar', function() {
 
       expect(urlTagValuesMock).toHaveBeenCalledWith(
         '/projects/123/456/tags/url/values/',
-        expect.objectContaining({data: {query: '"http://example.com"'}})
+        expect.objectContaining({data: {query: 'http://example.com'}})
       );
     });
 
