@@ -26,7 +26,7 @@ export function removeSpace(query = '') {
     return query;
   }
 }
-class SearchBar extends React.Component {
+class SmartSearchBar extends React.Component {
   static propTypes = {
     defaultQuery: PropTypes.string,
     query: PropTypes.string,
@@ -105,22 +105,22 @@ class SearchBar extends React.Component {
 
   DROPDOWN_BLUR_DURATION = 200;
 
-  blur() {
+  blur = () => {
     if (!this.searchInput.current) {
       return;
     }
     this.searchInput.current.blur();
-  }
+  };
 
-  onSubmit(evt) {
+  onSubmit = evt => {
     evt.preventDefault();
     this.blur();
     this.props.onSearch(removeSpace(this.state.query));
-  }
+  };
 
-  clearSearch() {
+  clearSearch = () => {
     this.setState({query: ''}, () => this.props.onSearch(this.state.query));
-  }
+  };
 
   onQueryFocus = () => {
     this.setState({
@@ -228,8 +228,8 @@ class SearchBar extends React.Component {
     let cursor = this.getCursorPosition();
     let query = this.state.query;
 
-    let lastTermIndex = SearchBar.getLastTermIndex(query, cursor);
-    let terms = SearchBar.getQueryTerms(query.slice(0, lastTermIndex));
+    let lastTermIndex = SmartSearchBar.getLastTermIndex(query, cursor);
+    let terms = SmartSearchBar.getQueryTerms(query.slice(0, lastTermIndex));
 
     if (
       !terms || // no terms
@@ -293,9 +293,9 @@ class SearchBar extends React.Component {
     return undefined;
   };
 
-  isDefaultDropdown() {
+  isDefaultDropdown = () => {
     return this.state.searchItems === this.props.defaultSearchItems;
-  }
+  };
 
   updateAutoCompleteState = (autoCompleteItems, tagName) => {
     autoCompleteItems = autoCompleteItems.map(item => {
@@ -364,8 +364,8 @@ class SearchBar extends React.Component {
     let cursor = this.getCursorPosition();
     let query = this.state.query;
 
-    let lastTermIndex = SearchBar.getLastTermIndex(query, cursor);
-    let terms = SearchBar.getQueryTerms(query.slice(0, lastTermIndex));
+    let lastTermIndex = SmartSearchBar.getLastTermIndex(query, cursor);
+    let terms = SmartSearchBar.getQueryTerms(query.slice(0, lastTermIndex));
     let newQuery;
 
     // If not postfixed with : (tag value), add trailing space
@@ -462,9 +462,9 @@ class SearchBar extends React.Component {
   }
 }
 
-const SearchBarContainer = withOrganization(
+const SmartSearchBarContainer = withOrganization(
   createReactClass({
-    displayName: 'SearchBarContainer',
+    displayName: 'SmartSearchBarContainer',
 
     mixins: [Reflux.listenTo(MemberListStore, 'onMemberListStoreChange')],
 
@@ -484,7 +484,7 @@ const SearchBarContainer = withOrganization(
     },
 
     render() {
-      return <SearchBar {...this.props} members={this.state.members} />;
+      return <SmartSearchBar {...this.props} members={this.state.members} />;
     },
   })
 );
@@ -493,4 +493,5 @@ const DropdownWrapper = styled('div')`
   display: ${p => (p.visible ? 'block' : 'none')};
 `;
 
-export default SearchBarContainer;
+export default SmartSearchBarContainer;
+export {SmartSearchBar};
