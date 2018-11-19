@@ -9,7 +9,7 @@ describe('SearchBar', function() {
   let options;
   let urlTagValuesMock;
   let supportedTags;
-  const clickInput = searchBar => {};
+  const clickInput = searchBar => searchBar.find('input[name="query"]').simulate('click');
 
   beforeEach(function() {
     TagStore.reset();
@@ -53,10 +53,12 @@ describe('SearchBar', function() {
       let searchBar = mount(<SearchBar {...props} />, options);
       clickInput(searchBar);
       clock.tick(301);
-      expect(searchBar.state.searchTerm).toEqual('"fu"');
-      expect(searchBar.state.searchItems).toEqual([]);
-      expect(searchBar.state.activeSearchItem).toEqual(0);
-      expect(urlTagValuesMock).toHaveBeenCalledWith();
+      expect(searchBar.find('SearchDropdown').prop('searchSubstring')).toEqual('"fu"');
+      expect(searchBar.find('SearchDropdown').prop('items')).toEqual([]);
+      expect(urlTagValuesMock).toHaveBeenCalledWith(
+        '/projects/123/456/tags/url/values/',
+        expect.objectContaining({data: {query: '"fu"'}})
+      );
     });
 
     it('sets state when value has colon', function() {
@@ -69,12 +71,17 @@ describe('SearchBar', function() {
 
       let searchBar = mount(<SearchBar {...props} />, options);
       clickInput(searchBar);
-      expect(searchBar.state.searchTerm).toEqual('"http://example.com"');
-      expect(searchBar.state.searchItems).toEqual([]);
-      expect(searchBar.state.activeSearchItem).toEqual(0);
+      expect(searchBar.state.searchTerm).toEqual();
+      expect(searchBar.find('SearchDropdown').prop('searchSubstring')).toEqual(
+        '"http://example.com"'
+      );
+      expect(searchBar.find('SearchDropdown').prop('items')).toEqual([]);
       clock.tick(301);
 
-      expect(urlTagValuesMock).toHaveBeenCalledWith();
+      expect(urlTagValuesMock).toHaveBeenCalledWith(
+        '/projects/123/456/tags/url/values/',
+        expect.objectContaining({data: {query: '"http://example.com"'}})
+      );
     });
 
     it('does not request values when tag is `timesSeen`', function() {
